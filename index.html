@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Nathan Soldati — EE & AI/ML</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0a0f;
+      --surface: #111118;
+      --border: rgba(255,255,255,0.07);
+      --text: #e8e8f0;
+      --muted: #6b6b80;
+      --accent: #c8f542;
+      --accent2: #7b61ff;
+      --font-display: 'DM Serif Display', Georgia, serif;
+      --font-mono: 'DM Mono', 'Courier New', monospace;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-mono);
+      font-size: 14px;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* ── NOISE OVERLAY ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 1000;
+      opacity: 0.4;
+    }
+
+    /* ── GRID BACKGROUND ── */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(var(--border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── GLOW ── */
+    .glow-orb {
+      position: fixed;
+      width: 600px;
+      height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(123,97,255,0.12) 0%, transparent 70%);
+      top: -200px;
+      right: -100px;
+      pointer-events: none;
+      z-index: 0;
+      animation: drift 12s ease-in-out infinite alternate;
+    }
+    @keyframes drift {
+      from { transform: translate(0, 0); }
+      to   { transform: translate(-60px, 80px); }
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 48px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(10,10,15,0.85);
+      backdrop-filter: blur(16px);
+    }
+    .nav-logo {
+      font-family: var(--font-display);
+      font-size: 20px;
+      color: var(--accent);
+      letter-spacing: -0.5px;
+    }
+    .nav-links { display: flex; gap: 32px; }
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--accent); }
+
+    /* ── SECTIONS ── */
+    section { position: relative; z-index: 1; }
+
+    /* ── HERO ── */
+    #hero {
+      min-height: 60vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 100px 48px 60px;
+      border-bottom: 1px solid var(--border);
+    }
+    .hero-eyebrow {
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 24px;
+      opacity: 0;
+      animation: fadeUp 0.6s ease forwards 0.2s;
+    }
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: clamp(40px, 6vw, 90px);
+      line-height: 1;
+      letter-spacing: -2px;
+      margin-bottom: 40px;
+      white-space: nowrap;
+      opacity: 0;
+      animation: fadeUp 0.8s ease forwards 0.4s;
+    }
+    .hero-title em {
+      font-style: italic;
+      color: var(--muted);
+    }
+    .hero-meta {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+        align-items: flex-start;
+        opacity: 0;
+        animation: fadeUp 0.8s ease forwards 0.6s;
+    }
+    .hero-desc {
+      max-width: 400px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.8;
+      padding: 20px 0;
+    }
+    .hero-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 20px;
+      padding: 20px 28px;
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 12px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      transition: background 0.2s, color 0.2s;
+      white-space: nowrap;
+    }
+    .hero-cta:hover { background: var(--accent); color: var(--bg); }
+    .hero-cta svg { width: 14px; height: 14px; }
+    .hero-year {
+      position: absolute;
+      bottom: 80px;
+      right: 48px;
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      opacity: 0;
+      animation: fadeUp 0.8s ease forwards 0.8s;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── ABOUT ── */
+    #about {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border-bottom: 1px solid var(--border);
+    }
+    .about-left {
+      padding: 24px 48px;
+      border-right: 1px solid var(--border);
+    }
+    .about-right { padding: 24px 48px; }
+    .section-label {
+      font-size: 10px;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 40px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .section-label::before {
+      content: '';
+      display: block;
+      width: 24px;
+      height: 1px;
+      background: var(--accent);
+    }
+    .about-bio {
+      font-family: var(--font-display);
+      font-size: clamp(22px, 2.5vw, 32px);
+      line-height: 1.4;
+      letter-spacing: -0.5px;
+      margin-bottom: 32px;
+    }
+    .about-bio em { font-style: italic; color: var(--muted); }
+    .about-detail { color: var(--muted); font-size: 13px; line-height: 1.9; }
+    .skills-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+    }
+    .skill-item {
+      padding: 20px 0;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .skill-item:nth-child(odd) { border-right: 1px solid var(--border); padding-right: 24px; }
+    .skill-item:nth-child(even) { padding-left: 24px; }
+    .skill-name { font-size: 13px; color: var(--text); }
+    .skill-level {
+      font-size: 10px;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    /* ── PROJECTS ── */
+    #projects { border-bottom: 1px solid var(--border); }
+    .projects-header {
+      padding: 60px 48px 40px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .projects-header h2 {
+      font-family: var(--font-display);
+      font-size: clamp(32px, 4vw, 56px);
+      letter-spacing: -1px;
+    }
+    .project-count {
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.15em;
+    }
+    .projects-grid { display: grid; grid-template-columns: repeat(3, 1fr); }
+    .project-card {
+      padding: 40px 48px;
+      border-right: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      transition: background 0.3s;
+      cursor: pointer;
+    }
+    .project-card:last-child { border-right: none; }
+    .project-card:hover { background: rgba(200,245,66,0.03); }
+    .project-number {
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 0.2em;
+      margin-bottom: 24px;
+    }
+    .project-title {
+      font-family: var(--font-display);
+      font-size: 24px;
+      line-height: 1.2;
+      letter-spacing: -0.5px;
+      margin-bottom: 16px;
+    }
+    .project-desc {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.8;
+      margin-bottom: 32px;
+    }
+    .project-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 32px; }
+    .tag {
+      font-size: 10px;
+      padding: 4px 10px;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .project-link {
+      font-size: 11px;
+      color: var(--accent);
+      text-decoration: none;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .project-link:hover { text-decoration: underline; }
+
+    /* ── CONTACT ── */
+    #contact {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+    .contact-left {
+      padding: 80px 48px;
+      border-right: 1px solid var(--border);
+    }
+    .contact-left h2 {
+      font-family: var(--font-display);
+      font-size: clamp(40px, 5vw, 72px);
+      line-height: 1.0;
+      letter-spacing: -1.5px;
+      margin-bottom: 32px;
+    }
+    .contact-left h2 em { font-style: italic; color: var(--muted); }
+    .contact-mail {
+      display: inline-block;
+      font-family: var(--font-display);
+      font-size: clamp(18px, 2vw, 28px);
+      color: var(--accent);
+      text-decoration: none;
+      border-bottom: 1px solid var(--accent);
+      padding-bottom: 4px;
+      transition: opacity 0.2s;
+    }
+    .contact-mail:hover { opacity: 0.7; }
+    .contact-right { padding: 80px 48px; display: flex; flex-direction: column; justify-content: space-between; }
+    .social-links { display: flex; flex-direction: row; gap: 32px; }
+    .social-link {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 10px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text);
+      text-decoration: none;
+      font-size: 13px;
+      transition: color 0.2s;
+    }
+    .social-link:hover { color: var(--accent); }
+    .social-link span { color: var(--muted); font-size: 11px; }
+    .footer-bottom {
+      padding-top: 40px;
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      nav { padding: 16px 24px; }
+      .nav-links { display: none; }
+      #hero { padding: 0 24px 60px; }
+      .hero-meta { flex-direction: column; align-items: flex-start; }
+      .hero-year { right: 24px; }
+      #about, #contact { grid-template-columns: 1fr; }
+      .about-left { border-right: none; border-bottom: 1px solid var(--border); padding: 48px 24px; }
+      .about-right { padding: 48px 24px; }
+      .projects-header { padding: 48px 24px 32px; }
+      .projects-grid { grid-template-columns: 1fr; }
+      .project-card { border-right: none; padding: 32px 24px; }
+      .contact-left { border-right: none; border-bottom: 1px solid var(--border); padding: 48px 24px; }
+      .contact-right { padding: 48px 24px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="glow-orb"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">NS</div>
+  <div class="nav-links">
+    <a href="#about">About</a>
+    <a href="#projects">Projects</a>
+    <a href="#contact">Contact</a>
+    <a href="https://github.com/nsoldati" target="_blank">GitHub ↗</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-eyebrow">Open to research & industry opportunities</div>
+  <h1 class="hero-title">Nathan <em>Soldati</em></h1>
+  <div class="hero-meta">
+    <p class="hero-desc">
+      EE Master's student at ETH Zürich — AI/ML, automation & intelligent systems.
+    </p>
+    <a href="#projects" class="hero-cta">
+      View projects
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M3 8h10M8 3l5 5-5 5"/>
+      </svg>
+    </a>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="about-left">
+    <div class="section-label">About</div>
+    <p class="about-bio">
+      Master's student at ETH Zürich with a deep focus on <em>machine learning</em> and <em>intelligent automation</em> systems.
+    </p>
+    <p class="about-detail">
+      My work focuses on the intersection of data-driven models and real-world automation.
+    </p>
+  </div>
+  <div class="about-right">
+    <div class="section-label">Tech Stack</div>
+    <div class="skills-grid">
+      <div class="skill-item"><span class="skill-name">Python</span><span class="skill-level">Advanced</span></div>
+      <div class="skill-item"><span class="skill-name">C / C++</span><span class="skill-level">Intermediate</span></div>
+      <div class="skill-item"><span class="skill-name">PyTorch</span><span class="skill-level">Advanced</span></div>
+      <div class="skill-item"><span class="skill-name">MLOps</span><span class="skill-level">Intermediate</span></div>
+      <div class="skill-item"><span class="skill-name">Linux / Bash</span><span class="skill-level">Advanced</span></div>
+      <div class="skill-item"><span class="skill-name">Git</span><span class="skill-level">Advanced</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="projects-header">
+    <h2>Projects</h2>
+    <span class="project-count">02 works</span>
+  </div>
+  <div class="projects-grid" style="grid-template-columns: repeat(2, 1fr);">
+
+    <div class="project-card">
+      <div class="project-number">01</div>
+      <h3 class="project-title">EA Stock Prediction</h3>
+      <p class="project-desc">Predicts stock price direction on earnings announcement days using a multi-modal pipeline — combining firm fundamentals, technical indicators, and FinBERT-based news sentiment. Benchmarks LSTM against Transformer architectures.</p>
+      <div class="project-tags">
+        <span class="tag">Python</span>
+        <span class="tag">PyTorch</span>
+        <span class="tag">LSTM</span>
+        <span class="tag">Transformer</span>
+        <span class="tag">NLP</span>
+      </div>
+      <a href="https://github.com/nsoldati/ea-stock-prediction" class="project-link" target="_blank">
+        View on GitHub →
+      </a>
+    </div>
+
+    <div class="project-card">
+      <div class="project-number">02</div>
+      <h3 class="project-title">Fact-Checking Environmental Data</h3>
+      <p class="project-desc">An automated fact verification system for environmental claims. Retrieves relevant evidence from a knowledge base and classifies each claim as SUPPORTS, REFUTES, NOT_ENOUGH_INFO, or DISPUTED.</p>
+      <div class="project-tags">
+        <span class="tag">Python</span>
+        <span class="tag">NLP</span>
+        <span class="tag">Information Retrieval</span>
+        <span class="tag">Jupyter</span>
+      </div>
+      <a href="https://github.com/nsoldati/fact-checking-environmental-data" class="project-link" target="_blank">
+        View on GitHub →
+      </a>
+    </div>
+
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="contact-left">
+    <div class="section-label">Contact</div>
+    <div class="social-links">
+      <a href="https://github.com/nsoldati" class="social-link" target="_blank">
+        GitHub 
+      </a>
+      <a href="https://www.linkedin.com/in/nathan-soldati-8b8070269/" class="social-link" target="_blank">
+        LinkedIn 
+      </a>
+      <a href="mailto:nsoldati@student.ethz.ch" class="social-link">
+        Email 
+      </a>
+    </div>
+    <div class="footer-bottom">
+      Built with HTML · Hosted on GitHub Pages · ETH Zürich, 2026
+    </div>
+  </div>
+</section>
+
+</body>
+</html>
