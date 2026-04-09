@@ -4,20 +4,24 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Nathan Soldati — EE & AI/ML</title>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet"/>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg: #0a0a0f;
-      --surface: #111118;
-      --border: rgba(255,255,255,0.07);
-      --text: #e8e8f0;
-      --muted: #6b6b80;
-      --accent: #c8f542;
-      --accent2: #7b61ff;
-      --font-display: 'DM Serif Display', Georgia, serif;
-      --font-mono: 'DM Mono', 'Courier New', monospace;
+      --bg:         #fdf6ee;
+      --bg-alt:     #f7ede0;
+      --bg-alt2:    #faf1e6;
+      --text:       #1c1a17;
+      --muted:      #7a7060;
+      --border:     #e0d4c0;
+      --link:       #3a5a8a;
+      --link-hover: #6a471e;
+      --tag-bg:     #f0e6d4;
+      --font-serif: 'EB Garamond', Georgia, serif;
+      --font-mono:  'DM Mono', 'Courier New', monospace;
+      --max-width:  720px;
+      --radius:     6px;
     }
 
     html { scroll-behavior: smooth; }
@@ -25,480 +29,620 @@
     body {
       background: var(--bg);
       color: var(--text);
-      font-family: var(--font-mono);
-      font-size: 14px;
+      font-family: var(--font-serif);
+      font-size: 17px;
       line-height: 1.7;
       overflow-x: hidden;
     }
 
-    /* ── NOISE OVERLAY ── */
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-      pointer-events: none;
-      z-index: 1000;
-      opacity: 0.4;
-    }
-
-    /* ── GRID BACKGROUND ── */
-    body::after {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background-image:
-        linear-gradient(var(--border) 1px, transparent 1px),
-        linear-gradient(90deg, var(--border) 1px, transparent 1px);
-      background-size: 60px 60px;
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    /* ── GLOW ── */
-    .glow-orb {
-      position: fixed;
-      width: 600px;
-      height: 600px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(123,97,255,0.12) 0%, transparent 70%);
-      top: -200px;
-      right: -100px;
-      pointer-events: none;
-      z-index: 0;
-      animation: drift 12s ease-in-out infinite alternate;
-    }
-    @keyframes drift {
-      from { transform: translate(0, 0); }
-      to   { transform: translate(-60px, 80px); }
+    /* ── LAYOUT ── */
+    .container {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 0 32px;
     }
 
     /* ── NAV ── */
     nav {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      z-index: 100;
+      padding: 48px 0 0;
+      margin-bottom: 64px;
+    }
+    .nav-inner {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 0 32px;
       display: flex;
       justify-content: space-between;
-      align-items: center;
-      padding: 20px 48px;
-      border-bottom: 1px solid var(--border);
-      background: rgba(10,10,15,0.85);
-      backdrop-filter: blur(16px);
+      align-items: baseline;
     }
     .nav-logo {
-      font-family: var(--font-display);
-      font-size: 20px;
-      color: var(--accent);
-      letter-spacing: -0.5px;
+      font-family: var(--font-serif);
+      font-size: 19px;
+      font-weight: 500;
+      color: var(--text);
+      letter-spacing: 0.01em;
+      text-decoration: none;
+      position: relative;
     }
-    .nav-links { display: flex; gap: 32px; }
+    .nav-logo::after {
+      content: '';
+      position: absolute;
+      bottom: -2px; left: 0; right: 0;
+      height: 1px;
+      background: var(--text);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s ease;
+    }
+    .nav-logo:hover::after { transform: scaleX(1); }
+
+    .nav-links { display: flex; gap: 28px; }
     .nav-links a {
       color: var(--muted);
       text-decoration: none;
-      font-size: 12px;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
+      font-size: 13.5px;
+      font-family: var(--font-mono);
+      letter-spacing: 0.04em;
+      position: relative;
+      padding-bottom: 2px;
       transition: color 0.2s;
     }
-    .nav-links a:hover { color: var(--accent); }
-
-    /* ── SECTIONS ── */
-    section { position: relative; z-index: 1; }
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 1px;
+      background: var(--text);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.25s ease;
+    }
+    .nav-links a:hover { color: var(--text); }
+    .nav-links a:hover::after { transform: scaleX(1); }
 
     /* ── HERO ── */
     #hero {
-      min-height: 60vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
-      padding: 100px 48px 60px;
+      background: var(--bg);
+      padding-bottom: 60px;
       border-bottom: 1px solid var(--border);
     }
-    .hero-eyebrow {
-      font-size: 11px;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: 24px;
-      opacity: 0;
-      animation: fadeUp 0.6s ease forwards 0.2s;
+    .hero-layout {
+      display: flex;
+      gap: 48px;
+      align-items: flex-start;
     }
-    .hero-title {
-      font-family: var(--font-display);
-      font-size: clamp(40px, 6vw, 90px);
-      line-height: 1;
-      letter-spacing: -2px;
-      margin-bottom: 40px;
-      white-space: nowrap;
-      opacity: 0;
-      animation: fadeUp 0.8s ease forwards 0.4s;
-    }
-    .hero-title em {
+    .hero-photo {
+      flex: 0 0 124px;
+      width: 124px;
+      height: 124px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #e8d8c4, #d4c0a8);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-serif);
+      font-size: 40px;
+      color: #a08060;
       font-style: italic;
-      color: var(--muted);
+      border: 2px solid var(--border);
+      box-shadow: 0 4px 20px rgba(100,70,30,0.10);
+      transition: box-shadow 0.3s, transform 0.3s;
     }
-    .hero-meta {
-        display: flex;
-        flex-direction: column;
-        gap: 24px;
-        align-items: flex-start;
-        opacity: 0;
-        animation: fadeUp 0.8s ease forwards 0.6s;
+    .hero-photo:hover {
+      box-shadow: 0 8px 32px rgba(100,70,30,0.18);
+      transform: translateY(-2px);
+    }
+    .hero-name {
+      font-family: var(--font-serif);
+      font-size: clamp(30px, 4vw, 42px);
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+      margin-bottom: 8px;
+    }
+    .hero-title-line {
+      font-family: var(--font-mono);
+      font-size: 12.5px;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+      margin-bottom: 20px;
     }
     .hero-desc {
-      max-width: 400px;
-      color: var(--muted);
-      font-size: 13px;
+      font-size: 16.5px;
+      color: #4a4030;
       line-height: 1.8;
-      padding: 20px 0;
+      margin-bottom: 22px;
+      max-width: 460px;
     }
-    .hero-cta {
+    .hero-badge {
       display: inline-flex;
       align-items: center;
-      gap: 20px;
-      padding: 20px 28px;
-      border: 1px solid var(--accent);
-      color: var(--accent);
-      text-decoration: none;
-      font-size: 12px;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      transition: background 0.2s, color 0.2s;
-      white-space: nowrap;
-    }
-    .hero-cta:hover { background: var(--accent); color: var(--bg); }
-    .hero-cta svg { width: 14px; height: 14px; }
-    .hero-year {
-      position: absolute;
-      bottom: 80px;
-      right: 48px;
-      font-size: 11px;
+      gap: 7px;
+      font-family: var(--font-mono);
+      font-size: 11.5px;
       color: var(--muted);
-      letter-spacing: 0.1em;
-      opacity: 0;
-      animation: fadeUp 0.8s ease forwards 0.8s;
+      background: var(--tag-bg);
+      border: 1px solid var(--border);
+      padding: 5px 14px;
+      letter-spacing: 0.04em;
+      border-radius: 99px;
+    }
+    .hero-badge::before {
+      content: '';
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: #7a9a5a;
+      display: inline-block;
+      flex-shrink: 0;
+    }
+    .hero-links {
+      margin-top: 22px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .hero-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-family: var(--font-mono);
+      font-size: 12.5px;
+      color: var(--muted);
+      text-decoration: none;
+      letter-spacing: 0.03em;
+      padding: 7px 14px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: transparent;
+      transition: background 0.2s, color 0.2s, border-color 0.2s, transform 0.15s, box-shadow 0.2s;
+    }
+    .hero-link:hover {
+      background: #eb6505bd;
+      color: #ffffff;
+      border-color: #deb88e;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(28,26,23,0.15);
+    }
+    .hero-link svg {
+      width: 14px; height: 14px;
+      flex-shrink: 0;
     }
 
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(24px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    /* ── ABOUT ── */
-    #about {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
+    /* ── SECTION WRAPPERS (alternating bg) ── */
+    .section-wrap {
+      padding: 52px 0;
       border-bottom: 1px solid var(--border);
     }
-    .about-left {
-      padding: 24px 48px;
-      border-right: 1px solid var(--border);
-    }
-    .about-right { padding: 24px 48px; }
-    .section-label {
-      font-size: 10px;
-      letter-spacing: 0.25em;
+    .section-wrap.bg-1 { background: var(--bg-alt); }
+    .section-wrap.bg-2 { background: var(--bg-alt2); }
+    .section-wrap.bg-3 { background: var(--bg-alt); }
+    .section-wrap.bg-4 { background: var(--bg-alt2); }
+
+    .section-title {
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      font-weight: 400;
+      letter-spacing: 0.18em;
       text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: 40px;
+      color: var(--muted);
+      margin-bottom: 28px;
       display: flex;
       align-items: center;
       gap: 12px;
     }
-    .section-label::before {
+    .section-title::after {
       content: '';
-      display: block;
-      width: 24px;
+      flex: 1;
       height: 1px;
-      background: var(--accent);
+      background: var(--border);
     }
-    .about-bio {
-      font-family: var(--font-display);
-      font-size: clamp(22px, 2.5vw, 32px);
-      line-height: 1.4;
-      letter-spacing: -0.5px;
-      margin-bottom: 32px;
+
+    /* ── ABOUT ── */
+    .about-text {
+      font-size: 16.5px;
+      color: #3a3228;
+      line-height: 1.85;
+      margin-bottom: 14px;
     }
-    .about-bio em { font-style: italic; color: var(--muted); }
-    .about-detail { color: var(--muted); font-size: 13px; line-height: 1.9; }
-    .skills-grid {
+    .about-text:last-child { margin-bottom: 0; }
+    .about-text em { font-style: italic; color: var(--text); }
+
+    /* ── TECH STACK ── */
+    .skills-list {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 0;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      background: var(--bg);
     }
-    .skill-item {
-      padding: 20px 0;
-      border-bottom: 1px solid var(--border);
+    .skill-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      padding: 11px 18px;
+      border-bottom: 1px solid var(--border);
+      font-size: 15px;
+      transition: background 0.18s;
     }
-    .skill-item:nth-child(odd) { border-right: 1px solid var(--border); padding-right: 24px; }
-    .skill-item:nth-child(even) { padding-left: 24px; }
-    .skill-name { font-size: 13px; color: var(--text); }
+    .skill-row:hover { background: rgba(160,120,60,0.06); }
+    .skill-row:nth-last-child(-n+2) { border-bottom: none; }
+    .skill-row:nth-child(odd) { border-right: 1px solid var(--border); }
+    .skill-name { color: var(--text); }
     .skill-level {
-      font-size: 10px;
-      color: var(--accent);
-      letter-spacing: 0.1em;
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      color: var(--muted);
+      letter-spacing: 0.06em;
       text-transform: uppercase;
     }
 
     /* ── PROJECTS ── */
-    #projects { border-bottom: 1px solid var(--border); }
-    .projects-header {
-      padding: 60px 48px 40px;
-      border-bottom: 1px solid var(--border);
+    .project-item {
+      padding: 22px 20px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-bottom: 14px;
+      background: var(--bg);
+      transition: box-shadow 0.22s, transform 0.22s, border-color 0.22s;
+    }
+    .project-item:last-child { margin-bottom: 0; }
+    .project-item:hover {
+      box-shadow: 0 6px 28px rgba(100,70,20,0.10);
+      transform: translateY(-2px);
+      border-color: #c8b89a;
+    }
+    .project-header {
       display: flex;
-      justify-content: space-between;
-      align-items: center;
+      align-items: baseline;
+      gap: 10px;
+      margin-bottom: 8px;
     }
-    .projects-header h2 {
-      font-family: var(--font-display);
-      font-size: clamp(32px, 4vw, 56px);
-      letter-spacing: -1px;
-    }
-    .project-count {
-      font-size: 11px;
+    .project-num {
+      font-family: var(--font-mono);
+      font-size: 10.5px;
       color: var(--muted);
-      letter-spacing: 0.15em;
+      letter-spacing: 0.06em;
+      flex-shrink: 0;
     }
-    .projects-grid { display: grid; grid-template-columns: repeat(3, 1fr); }
-    .project-card {
-      padding: 40px 48px;
-      border-right: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
-      transition: background 0.3s;
-      cursor: pointer;
-    }
-    .project-card:last-child { border-right: none; }
-    .project-card:hover { background: rgba(200,245,66,0.03); }
-    .project-number {
-      font-size: 10px;
-      color: var(--muted);
-      letter-spacing: 0.2em;
-      margin-bottom: 24px;
-    }
-    .project-title {
-      font-family: var(--font-display);
-      font-size: 24px;
-      line-height: 1.2;
-      letter-spacing: -0.5px;
-      margin-bottom: 16px;
+    .project-name {
+      font-family: var(--font-serif);
+      font-size: 19px;
+      font-weight: 500;
+      color: var(--text);
+      letter-spacing: -0.01em;
     }
     .project-desc {
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.8;
-      margin-bottom: 32px;
+      font-size: 15px;
+      color: #524840;
+      line-height: 1.78;
+      margin-bottom: 12px;
     }
-    .project-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 32px; }
+    .project-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 14px;
+    }
     .tag {
-      font-size: 10px;
-      padding: 4px 10px;
-      border: 1px solid var(--border);
+      font-family: var(--font-mono);
+      font-size: 10.5px;
       color: var(--muted);
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
+      background: var(--tag-bg);
+      border: 1px solid var(--border);
+      padding: 2px 9px;
+      letter-spacing: 0.04em;
+      border-radius: 4px;
+      transition: background 0.15s, color 0.15s;
     }
+    .tag:hover { background: var(--border); color: var(--text); }
     .project-link {
-      font-size: 11px;
-      color: var(--accent);
-      text-decoration: none;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
       display: inline-flex;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--link);
+      text-decoration: none;
+      letter-spacing: 0.02em;
+      transition: color 0.15s, gap 0.2s;
     }
-    .project-link:hover { text-decoration: underline; }
+    .project-link:hover { color: var(--link-hover); gap: 9px; }
+    .project-link svg { width: 12px; height: 12px; flex-shrink: 0; }
 
     /* ── CONTACT ── */
-    #contact {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
+    .contact-intro {
+      font-size: 16.5px;
+      color: #3a3228;
+      line-height: 1.85;
+      margin-bottom: 28px;
+      max-width: 500px;
     }
-    .contact-left {
-      padding: 80px 48px;
-      border-right: 1px solid var(--border);
+    .contact-cards {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
     }
-    .contact-left h2 {
-      font-family: var(--font-display);
-      font-size: clamp(40px, 5vw, 72px);
-      line-height: 1.0;
-      letter-spacing: -1.5px;
-      margin-bottom: 32px;
-    }
-    .contact-left h2 em { font-style: italic; color: var(--muted); }
-    .contact-mail {
-      display: inline-block;
-      font-family: var(--font-display);
-      font-size: clamp(18px, 2vw, 28px);
-      color: var(--accent);
+    .contact-card {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 14px 18px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--bg);
       text-decoration: none;
-      border-bottom: 1px solid var(--accent);
-      padding-bottom: 4px;
-      transition: opacity 0.2s;
+      color: var(--text);
+      transition: background 0.2s, border-color 0.2s, transform 0.18s, box-shadow 0.2s;
     }
-    .contact-mail:hover { opacity: 0.7; }
-    .contact-right { padding: 80px 48px; display: flex; flex-direction: column; justify-content: space-between; }
-    .social-links { display: flex; flex-direction: row; gap: 32px; }
-    .social-link {
+    .contact-card:hover {
+      background: var(--text);
+      border-color: var(--text);
+      transform: translateX(5px);
+      box-shadow: 0 4px 20px rgba(28,26,23,0.13);
+    }
+    .contact-card:hover .contact-icon { color: rgba(255,255,255,0.7); }
+    .contact-card:hover .contact-label-sm { color: rgba(255,255,255,0.5); }
+    .contact-card:hover .contact-val-text { color: #fdf6ee; }
+    .contact-card:hover .contact-arrow { color: rgba(255,255,255,0.6); transform: translateX(4px); }
+
+    .contact-icon {
+      color: var(--muted);
+      flex-shrink: 0;
+      transition: color 0.2s;
+    }
+    .contact-icon svg { width: 18px; height: 18px; display: block; }
+    .contact-text { display: flex; flex-direction: column; gap: 2px; }
+    .contact-label-sm {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .contact-val-text {
+      font-family: var(--font-serif);
+      font-size: 16px;
+      color: var(--text);
+      transition: color 0.2s;
+    }
+    .contact-arrow {
+      margin-left: auto;
+      font-size: 16px;
+      color: var(--muted);
+      transition: color 0.2s, transform 0.2s;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 24px 0;
+      background: var(--bg);
+    }
+    .footer-inner {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 0 32px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 10px 10px;
-      border-bottom: 1px solid var(--border);
-      color: var(--text);
-      text-decoration: none;
-      font-size: 13px;
-      transition: color 0.2s;
     }
-    .social-link:hover { color: var(--accent); }
-    .social-link span { color: var(--muted); font-size: 11px; }
-    .footer-bottom {
-      padding-top: 40px;
-      font-size: 11px;
+    .footer-text {
+      font-family: var(--font-mono);
+      font-size: 11.5px;
       color: var(--muted);
-      letter-spacing: 0.05em;
+      letter-spacing: 0.03em;
     }
 
     /* ── RESPONSIVE ── */
-    @media (max-width: 768px) {
-      nav { padding: 16px 24px; }
-      .nav-links { display: none; }
-      #hero { padding: 0 24px 60px; }
-      .hero-meta { flex-direction: column; align-items: flex-start; }
-      .hero-year { right: 24px; }
-      #about, #contact { grid-template-columns: 1fr; }
-      .about-left { border-right: none; border-bottom: 1px solid var(--border); padding: 48px 24px; }
-      .about-right { padding: 48px 24px; }
-      .projects-header { padding: 48px 24px 32px; }
-      .projects-grid { grid-template-columns: 1fr; }
-      .project-card { border-right: none; padding: 32px 24px; }
-      .contact-left { border-right: none; border-bottom: 1px solid var(--border); padding: 48px 24px; }
-      .contact-right { padding: 48px 24px; }
+    @media (max-width: 600px) {
+      nav { padding: 32px 0 0; margin-bottom: 40px; }
+      .nav-inner { flex-direction: column; gap: 14px; }
+      .hero-layout { flex-direction: column; gap: 24px; }
+      .hero-photo { flex: 0 0 96px; width: 96px; height: 96px; font-size: 32px; }
+      .skills-list { grid-template-columns: 1fr; }
+      .skill-row:nth-child(odd) { border-right: none; }
+      .skill-row:nth-last-child(1) { border-bottom: none; }
+      .skill-row:nth-last-child(2) { border-bottom: 1px solid var(--border); }
+      .footer-inner { flex-direction: column; gap: 8px; text-align: center; }
     }
   </style>
 </head>
 <body>
 
-<div class="glow-orb"></div>
-
 <!-- NAV -->
 <nav>
-  <div class="nav-logo">NS</div>
-  <div class="nav-links">
-    <a href="#about">About</a>
-    <a href="#projects">Projects</a>
-    <a href="#contact">Contact</a>
-    <a href="https://github.com/nsoldati" target="_blank">GitHub ↗</a>
+  <div class="nav-inner">
+    <a href="#" class="nav-logo">Nathan Soldati</a>
+    <div class="nav-links">
+      <a href="#about">About</a>
+      <a href="#projects">Projects</a>
+      <a href="#contact">Contact</a>
+    </div>
   </div>
 </nav>
 
 <!-- HERO -->
 <section id="hero">
-  <div class="hero-eyebrow">Open to research & industry opportunities</div>
-  <h1 class="hero-title">Nathan <em>Soldati</em></h1>
-  <div class="hero-meta">
-    <p class="hero-desc">
-      EE Master's student at ETH Zürich — AI/ML, automation & intelligent systems.
-    </p>
-    <a href="#projects" class="hero-cta">
-      View projects
-      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
-        <path d="M3 8h10M8 3l5 5-5 5"/>
-      </svg>
-    </a>
+  <div class="container">
+    <div class="hero-layout">
+      <div class="hero-photo">
+        <img src="pic.jpeg" alt="Nathan Soldati" style="width:100%; height:100%; object-fit:cover;"/>
+    </div>
+      <div class="hero-text">
+        <h1 class="hero-name">Nathan Soldati</h1>
+        <div class="hero-title-line">M.Sc. Electrical Engineering — ETH Zürich</div>
+        <p class="hero-desc">
+          Master's student specialising in machine learning, intelligent automation, and data-driven systems.
+          Currently based in Zürich.
+        </p>
+        <span class="hero-badge">Open to research &amp; industry opportunities</span>
+        <div class="hero-links">
+          <a href="https://github.com/nsoldati" class="hero-link" target="_blank">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.021c0 4.428 2.865 8.185 6.839 9.505.5.092.682-.217.682-.482 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.342-3.369-1.342-.454-1.154-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844a9.59 9.59 0 0 1 2.504.338c1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482C19.138 20.203 22 16.447 22 12.021 22 6.484 17.523 2 12 2z"/></svg>
+            GitHub
+          </a>
+          <a href="https://www.linkedin.com/in/nathan-soldati-8b8070269/" class="hero-link" target="_blank">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+            LinkedIn
+          </a>
+          <a href="mailto:nathan.soldati@outlook.com" class="hero-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 7 10-7"/></svg>
+            Email
+          </a>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
 <!-- ABOUT -->
-<section id="about">
-  <div class="about-left">
-    <div class="section-label">About</div>
-    <p class="about-bio">
-      Master's student at ETH Zürich with a deep focus on <em>machine learning</em> and <em>intelligent automation</em> systems.
-    </p>
-    <p class="about-detail">
-      My work focuses on the intersection of data-driven models and real-world automation.
-    </p>
-  </div>
-  <div class="about-right">
-    <div class="section-label">Tech Stack</div>
-    <div class="skills-grid">
-      <div class="skill-item"><span class="skill-name">Python</span><span class="skill-level">Advanced</span></div>
-      <div class="skill-item"><span class="skill-name">C / C++</span><span class="skill-level">Intermediate</span></div>
-      <div class="skill-item"><span class="skill-name">PyTorch</span><span class="skill-level">Advanced</span></div>
-      <div class="skill-item"><span class="skill-name">MLOps</span><span class="skill-level">Intermediate</span></div>
-      <div class="skill-item"><span class="skill-name">Linux / Bash</span><span class="skill-level">Advanced</span></div>
-      <div class="skill-item"><span class="skill-name">Git</span><span class="skill-level">Advanced</span></div>
+<div class="section-wrap bg-1">
+  <section id="about">
+    <div class="container">
+      <h2 class="section-title">About</h2>
+      <p class="about-text">
+        I am a Master's student in Electrical Engineering at ETH Zürich, with a focus on
+        <em>machine learning</em> and <em>intelligent automation</em>. My work sits at the
+        intersection of data-driven modelling and real-world systems — from financial time-series
+        prediction to automated fact verification.
+      </p>
+      <p class="about-text">
+        Before ETH, I completed my bachelor's degree in electrical engineering. I am interested in
+        applied ML research and its deployment in production systems.
+      </p>
     </div>
-  </div>
-</section>
+  </section>
+</div>
+
+<!-- SKILLS -->
+<div class="section-wrap bg-2">
+  <section id="skills">
+    <div class="container">
+      <h2 class="section-title">Technical skills</h2>
+      <div class="skills-list">
+        <div class="skill-row"><span class="skill-name">Python</span><span class="skill-level">Advanced</span></div>
+        <div class="skill-row"><span class="skill-name">C / C++</span><span class="skill-level">Intermediate</span></div>
+        <div class="skill-row"><span class="skill-name">PyTorch</span><span class="skill-level">Advanced</span></div>
+        <div class="skill-row"><span class="skill-name">MLOps</span><span class="skill-level">Intermediate</span></div>
+        <div class="skill-row"><span class="skill-name">Linux / Bash</span><span class="skill-level">Advanced</span></div>
+        <div class="skill-row"><span class="skill-name">Git</span><span class="skill-level">Advanced</span></div>
+      </div>
+    </div>
+  </section>
+</div>
 
 <!-- PROJECTS -->
-<section id="projects">
-  <div class="projects-header">
-    <h2>Projects</h2>
-    <span class="project-count">02 works</span>
-  </div>
-  <div class="projects-grid" style="grid-template-columns: repeat(2, 1fr);">
+<div class="section-wrap bg-3">
+  <section id="projects">
+    <div class="container">
+      <h2 class="section-title">Projects</h2>
 
-    <div class="project-card">
-      <div class="project-number">01</div>
-      <h3 class="project-title">EA Stock Prediction</h3>
-      <p class="project-desc">Predicts stock price direction on earnings announcement days using a multi-modal pipeline — combining firm fundamentals, technical indicators, and FinBERT-based news sentiment. Benchmarks LSTM against Transformer architectures.</p>
-      <div class="project-tags">
-        <span class="tag">Python</span>
-        <span class="tag">PyTorch</span>
-        <span class="tag">LSTM</span>
-        <span class="tag">Transformer</span>
-        <span class="tag">NLP</span>
+      <div class="project-item">
+        <div class="project-header">
+          <span class="project-num">01.</span>
+          <span class="project-name">EA Stock Prediction</span>
+        </div>
+        <p class="project-desc">
+          Predicts stock price direction on earnings announcement days using a multi-modal pipeline
+          combining firm fundamentals, technical indicators, and FinBERT-based news sentiment.
+          Benchmarks LSTM against Transformer architectures.
+        </p>
+        <div class="project-tags">
+          <span class="tag">Python</span>
+          <span class="tag">PyTorch</span>
+          <span class="tag">LSTM</span>
+          <span class="tag">Transformer</span>
+          <span class="tag">NLP</span>
+        </div>
+        <a href="https://github.com/nsoldati/ea-stock-prediction" class="project-link" target="_blank">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.021c0 4.428 2.865 8.185 6.839 9.505.5.092.682-.217.682-.482 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.342-3.369-1.342-.454-1.154-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844a9.59 9.59 0 0 1 2.504.338c1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482C19.138 20.203 22 16.447 22 12.021 22 6.484 17.523 2 12 2z"/></svg>
+          View on GitHub →
+        </a>
       </div>
-      <a href="https://github.com/nsoldati/ea-stock-prediction" class="project-link" target="_blank">
-        View on GitHub →
-      </a>
-    </div>
 
-    <div class="project-card">
-      <div class="project-number">02</div>
-      <h3 class="project-title">Fact-Checking Environmental Data</h3>
-      <p class="project-desc">An automated fact verification system for environmental claims. Retrieves relevant evidence from a knowledge base and classifies each claim as SUPPORTS, REFUTES, NOT_ENOUGH_INFO, or DISPUTED.</p>
-      <div class="project-tags">
-        <span class="tag">Python</span>
-        <span class="tag">NLP</span>
-        <span class="tag">Information Retrieval</span>
-        <span class="tag">Jupyter</span>
+      <div class="project-item">
+        <div class="project-header">
+          <span class="project-num">02.</span>
+          <span class="project-name">Fact-Checking Environmental Data</span>
+        </div>
+        <p class="project-desc">
+          An automated fact verification system for environmental claims. Retrieves relevant evidence
+          from a knowledge base and classifies each claim as SUPPORTS, REFUTES, NOT_ENOUGH_INFO, or DISPUTED.
+        </p>
+        <div class="project-tags">
+          <span class="tag">Python</span>
+          <span class="tag">NLP</span>
+          <span class="tag">Information Retrieval</span>
+          <span class="tag">Jupyter</span>
+        </div>
+        <a href="https://github.com/nsoldati/fact-checking-environmental-data" class="project-link" target="_blank">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.021c0 4.428 2.865 8.185 6.839 9.505.5.092.682-.217.682-.482 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.342-3.369-1.342-.454-1.154-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844a9.59 9.59 0 0 1 2.504.338c1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482C19.138 20.203 22 16.447 22 12.021 22 6.484 17.523 2 12 2z"/></svg>
+          View on GitHub →
+        </a>
       </div>
-      <a href="https://github.com/nsoldati/fact-checking-environmental-data" class="project-link" target="_blank">
-        View on GitHub →
-      </a>
-    </div>
 
-  </div>
-</section>
+    </div>
+  </section>
+</div>
 
 <!-- CONTACT -->
-<section id="contact">
-  <div class="contact-left">
-    <div class="section-label">Contact</div>
-    <div class="social-links">
-      <a href="https://github.com/nsoldati" class="social-link" target="_blank">
-        GitHub 
-      </a>
-      <a href="https://www.linkedin.com/in/nathan-soldati-8b8070269/" class="social-link" target="_blank">
-        LinkedIn 
-      </a>
-      <a href="mailto:nsoldati@student.ethz.ch" class="social-link">
-        Email 
-      </a>
+<div class="section-wrap bg-4">
+  <section id="contact">
+    <div class="container">
+      <h2 class="section-title">Contact</h2>
+      <p class="contact-intro">
+        Feel free to reach out for research collaborations, internship opportunities, or just to say hello.
+      </p>
+      <div class="contact-cards">
+
+        <a href="mailto:nathan.soldati@outlook.com" class="contact-card">
+          <span class="contact-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 7 10-7"/></svg>
+          </span>
+          <span class="contact-text">
+            <span class="contact-label-sm">Email</span>
+            <span class="contact-val-text">nathan.soldati@outlook.com</span>
+          </span>
+          <span class="contact-arrow">→</span>
+        </a>
+
+        <a href="https://github.com/nsoldati" class="contact-card" target="_blank">
+          <span class="contact-icon">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.021c0 4.428 2.865 8.185 6.839 9.505.5.092.682-.217.682-.482 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.342-3.369-1.342-.454-1.154-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844a9.59 9.59 0 0 1 2.504.338c1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482C19.138 20.203 22 16.447 22 12.021 22 6.484 17.523 2 12 2z"/></svg>
+          </span>
+          <span class="contact-text">
+            <span class="contact-label-sm">GitHub</span>
+            <span class="contact-val-text">github.com/nsoldati</span>
+          </span>
+          <span class="contact-arrow">→</span>
+        </a>
+
+        <a href="https://www.linkedin.com/in/nathan-soldati-8b8070269/" class="contact-card" target="_blank">
+          <span class="contact-icon">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+          </span>
+          <span class="contact-text">
+            <span class="contact-label-sm">LinkedIn</span>
+            <span class="contact-val-text">linkedin.com/in/nathan-soldati</span>
+          </span>
+          <span class="contact-arrow">→</span>
+        </a>
+
+      </div>
     </div>
-    <div class="footer-bottom">
-      Built with HTML · Hosted on GitHub Pages · ETH Zürich, 2026
-    </div>
+  </section>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <span class="footer-text">Nathan Soldati — ETH Zürich, 2026</span>
+    <span class="footer-text">Built with HTML · GitHub Pages</span>
   </div>
-</section>
+</footer>
 
 </body>
 </html>
