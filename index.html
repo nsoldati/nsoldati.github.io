@@ -63,18 +63,9 @@
       letter-spacing: 0.01em;
       text-decoration: none;
       position: relative;
+      transition: color 0.2s;
     }
-    .nav-logo::after {
-      content: '';
-      position: absolute;
-      bottom: -2px; left: 0; right: 0;
-      height: 1px;
-      background: var(--text);
-      transform: scaleX(0);
-      transform-origin: left;
-      transition: transform 0.3s ease;
-    }
-    .nav-logo:hover::after { transform: scaleX(1); }
+    .nav-logo:hover { color: #eb6505; }
 
     .nav-links { display: flex; gap: 28px; }
     .nav-links a {
@@ -87,18 +78,9 @@
       padding-bottom: 2px;
       transition: color 0.2s;
     }
-    .nav-links a::after {
-      content: '';
-      position: absolute;
-      bottom: 0; left: 0; right: 0;
-      height: 1px;
-      background: var(--text);
-      transform: scaleX(0);
-      transform-origin: left;
-      transition: transform 0.25s ease;
-    }
-    .nav-links a:hover { color: var(--text); }
-    .nav-links a:hover::after { transform: scaleX(1); }
+    .nav-links a:hover { color: #eb6505; }
+    .nav-links a.active { color: var(--text); }
+    .nav-links a.active:hover { color: #eb6505; }
 
     /* ── HERO ── */
     #hero {
@@ -441,7 +423,7 @@
       nav { padding: 32px 0 0; margin-bottom: 40px; }
       .nav-inner { flex-direction: column; gap: 14px; }
       .hero-layout { flex-direction: column; gap: 24px; }
-      .hero-photo { flex: 0 0 96px; width: 96px; height: 96px; font-size: 32px; }
+      .hero-photo { flex: 0 0 96px; width: 96px; height: 96px; font-size: 32px; max-width: 96px; }
       .skills-list { grid-template-columns: 1fr; }
       .skill-row:nth-child(odd) { border-right: none; }
       .skill-row:nth-last-child(1) { border-bottom: none; }
@@ -455,11 +437,10 @@
 <!-- NAV -->
 <nav>
   <div class="nav-inner">
-    <a href="#" class="nav-logo">Nathan Soldati</a>
+    <a href="index.html" class="nav-logo">Nathan Soldati</a>
     <div class="nav-links">
-      <a href="#about">About</a>
-      <a href="#projects">Projects</a>
-      <a href="#contact">Contact</a>
+      <a href="index.html" class="active">Home</a>
+      <a href="cv.html">CV</a>
     </div>
   </div>
 </nav>
@@ -523,12 +504,12 @@
     <div class="container">
       <h2 class="section-title">Technical skills</h2>
       <div class="skills-list">
-        <div class="skill-row"><span class="skill-name">Python</span><span class="skill-level">Advanced</span></div>
-        <div class="skill-row"><span class="skill-name">C / C++</span><span class="skill-level">Intermediate</span></div>
-        <div class="skill-row"><span class="skill-name">PyTorch</span><span class="skill-level">Advanced</span></div>
-        <div class="skill-row"><span class="skill-name">MLOps</span><span class="skill-level">Intermediate</span></div>
-        <div class="skill-row"><span class="skill-name">Linux / Bash</span><span class="skill-level">Advanced</span></div>
-        <div class="skill-row"><span class="skill-name">Git</span><span class="skill-level">Advanced</span></div>
+        <div class="skill-row"><span class="skill-name"><strong>Python</strong></span><span class="skill-level">Advanced</span></div>
+        <div class="skill-row"><span class="skill-name"><strong>C / C++</strong></span><span class="skill-level">Intermediate</span></div>
+        <div class="skill-row"><span class="skill-name"><strong>PyTorch</strong></span><span class="skill-level">Advanced</span></div>
+        <div class="skill-row"><span class="skill-name"><strong>MLOps</strong></span><span class="skill-level">Intermediate</span></div>
+        <div class="skill-row"><span class="skill-name"><strong>Linux / Bash</strong></span><span class="skill-level">Advanced</span></div>
+        <div class="skill-row"><span class="skill-name"><strong>Git</strong></span><span class="skill-level">Advanced</span></div>
       </div>
     </div>
   </section>

@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Nathan Soldati — CV</title>
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:         #fdf6ee;
+      --bg-alt:     #f7ede0;
+      --bg-alt2:    #faf1e6;
+      --text:       #1c1a17;
+      --muted:      #7a7060;
+      --border:     #e0d4c0;
+      --link:       #3a5a8a;
+      --link-hover: #6a471e;
+      --tag-bg:     #f0e6d4;
+      --font-serif: 'EB Garamond', Georgia, serif;
+      --font-mono:  'DM Mono', 'Courier New', monospace;
+      --max-width:  720px;
+      --radius:     12px;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-serif);
+      font-size: 17px;
+      line-height: 1.7;
+    }
+
+    .container {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 0 32px;
+    }
+
+    /* ── NAV ── */
+    nav {
+      padding: 48px 0 0;
+      margin-bottom: 64px;
+    }
+    .nav-inner {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 0 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+    .nav-logo {
+      font-family: var(--font-serif);
+      font-size: 19px;
+      font-weight: 500;
+      color: var(--text);
+      text-decoration: none;
+      position: relative;
+      transition: color 0.2s;
+    }
+    .nav-logo:hover { color: #eb6505; }
+    .nav-links { display: flex; gap: 28px; }
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 13.5px;
+      font-family: var(--font-mono);
+      letter-spacing: 0.04em;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: #eb6505; }
+    .nav-links a.active { color: var(--text); }
+    .nav-links a.active:hover { color: #eb6505; }
+
+    /* ── CV CONTENT ── */
+    .section-title {
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      font-weight: 400;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 40px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .section-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .cv-subsection {
+      margin-bottom: 60px;
+    }
+    .cv-category {
+      font-family: var(--font-serif);
+      font-size: 24px;
+      font-weight: 500;
+      color: var(--text);
+      margin-bottom: 24px;
+      letter-spacing: -0.01em;
+    }
+
+    .cv-card {
+      background: var(--bg-alt2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      margin-bottom: 20px;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .cv-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    }
+
+    .cv-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .cv-role {
+      font-family: var(--font-serif);
+      font-size: 19px;
+      font-weight: 500;
+      color: var(--text);
+    }
+    .cv-org {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: var(--muted);
+      display: block;
+      margin-top: 2px;
+    }
+    .cv-org a, .cv-list a {
+      color: inherit;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .cv-org a:hover, .cv-list a:hover {
+      color: #eb6505;
+      text-decoration: underline;
+    }
+    .cv-date {
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      color: var(--muted);
+      margin-left: auto;
+    }
+
+    .cv-list {
+      list-style: none;
+      padding: 0;
+    }
+    .cv-list li {
+      font-size: 15.5px;
+      color: #4a4030;
+      margin-bottom: 8px;
+      position: relative;
+      padding-left: 20px;
+    }
+    .cv-list li::before {
+      content: '•';
+      position: absolute;
+      left: 0;
+      color: var(--muted);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 24px 0;
+      background: var(--bg);
+      margin-top: 80px;
+    }
+    .footer-inner {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 0 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .footer-text {
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      color: var(--muted);
+      letter-spacing: 0.03em;
+    }
+
+    @media (max-width: 600px) {
+      .nav-inner { flex-direction: column; gap: 14px; }
+      .cv-header { flex-direction: column; gap: 4px; }
+      .cv-date { margin-left: 0; margin-top: 4px; }
+      .footer-inner { flex-direction: column; gap: 8px; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">Nathan Soldati</a>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="cv.html" class="active">CV</a>
+    </div>
+  </div>
+</nav>
+
+<main class="container">
+  <h1 class="section-title">Curriculum Vitae</h1>
+
+  <!-- Professional Experience -->
+  <section class="cv-subsection">
+    <h2 class="cv-category">Professional Experience</h2>
+    
+    <div class="cv-card">
+      <div class="cv-header">
+        <div>
+          <span class="cv-role">AI & Computer Vision Engineer</span>
+          <span class="cv-org"><a href="https://swiss-ep.com/" target="_blank">Swiss Engineering Partners AG</a></span>
+        </div>
+        <span class="cv-date">Feb 2025 – Present</span>
+      </div>
+      <ul class="cv-list">
+        <li><strong>Full-Time Internship</strong></li>
+        <li>Developing and deploying computer vision systems for automated industrial video analysis.</li>
+        <li>Managing the full ML lifecycle, from scalable data pipelines to production deployment.</li>
+      </ul>
+    </div>
+
+    <div class="cv-card">
+      <div class="cv-header">
+        <div>
+          <span class="cv-role">Student Researcher</span>
+          <span class="cv-org"><a href="https://www.amstein-walthert.ch/" target="_blank">Amstein+Walthert</a></span>
+        </div>
+        <span class="cv-date">Sept 2025 – Dec 2025</span>
+      </div>
+      <ul class="cv-list">
+        <li><strong>Part-Time</strong></li>
+        <li>Fine-tuned Vision Transformers (ViT) for semantic segmentation of architectural floor plans.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- Academic Experience -->
+  <section class="cv-subsection">
+    <h2 class="cv-category">Academic Experience</h2>
+    
+    <div class="cv-card">
+      <div class="cv-header">
+        <div>
+          <span class="cv-role">Teaching Assistant</span>
+          <span class="cv-org"><a href="https://ee.ethz.ch/" target="_blank">ETH Zürich</a></span>
+        </div>
+        <span class="cv-date">2022 – 2024</span>
+      </div>
+      <ul class="cv-list">
+        <li><strong>Courses:</strong> Engineering Mechanics, Signal and Systems I and Signal and Systems II.</li>
+        <li>Lead exam preparation sessions for approximately 120 electrical engineering students.</li>
+      </ul>
+    </div>
+
+    <div class="cv-card">
+      <div class="cv-header">
+        <div>
+          <span class="cv-role">Research Assistant</span>
+          <span class="cv-org"><a href="https://control.ee.ethz.ch/" target="_blank">Automatic Control Laboratory, ETHZ</a></span>
+        </div>
+        <span class="cv-date">Spring 2023</span>
+      </div>
+      <ul class="cv-list">
+        <li><strong>Role:</strong> Design and implementation of a new project-based course.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- Academic Path -->
+  <section class="cv-subsection">
+    <h2 class="cv-category">Academic Path</h2>
+    
+    <div class="cv-card">
+      <div class="cv-header">
+        <div>
+          <span class="cv-role">MSc IT & Electrical Engineering</span>
+          <span class="cv-org"><a href="https://ee.ethz.ch/" target="_blank">ETH Zürich</a></span>
+        </div>
+        <span class="cv-date">2024 – Present</span>
+      </div>
+      <ul class="cv-list">
+        <li><strong>Focus:</strong> Machine Learning, AI and Computer Vision; Control Systems, Automation and Optimization.</li>
+      </ul>
+    </div>
+
+    <div class="cv-card">
+      <div class="cv-header">
+        <div>
+          <span class="cv-role">Exchange Semester</span>
+          <span class="cv-org"><a href="https://unimelb.edu.au/" target="_blank">University of Melbourne</a></span>
+        </div>
+        <span class="cv-date">Spring 2025</span>
+      </div>
+    </div>
+
+    <div class="cv-card">
+      <div class="cv-header">
+        <div>
+          <span class="cv-role">BSc IT & Electrical Engineering</span>
+          <span class="cv-org"><a href="https://ee.ethz.ch/" target="_blank">ETH Zürich</a></span>
+        </div>
+        <span class="cv-date">2021 – 2024</span>
+      </div>
+      <ul class="cv-list">
+        <li><strong>Bachelor Thesis:</strong> Multi-Layer Feedback Control for Selective Laser Melting Using a Backpropagation Strategy.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- Awards -->
+  <section class="cv-subsection">
+    <h2 class="cv-category">Awards</h2>
+    <ul class="cv-list">
+      <li><strong><a href="https://www.fondazionenizzola.ch/premiati-excellence-scholarship-2023/" target="_blank">Nizzola Excellence Scholarship:</a></strong> Awarded for exceptional academic performance during bachelor's studies.</li>
+      <li><strong><a href="https://ee.ethz.ch/news-and-events/d-itet-news-channel/2025/10/at-pbl-open-day-six-outstanding-students-honoured.html" target="_blank">ITET Best BSc Thesis Award:</a></strong> Awarded to the top 3 bachelor's students in the Electrical Engineering and Information Technology department at ETH Zürich.</li>
+    </ul>
+  </section>
+
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <span class="footer-text">Nathan Soldati — ETH Zürich, 2026</span>
+    <span class="footer-text">Built with HTML · GitHub Pages</span>
+  </div>
+</footer>
+
+</body>
+</html>
